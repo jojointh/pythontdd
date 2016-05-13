@@ -20,12 +20,12 @@ class HomePageTest(TestCase):
 
 class ListViewTest(TestCase):
 
-    def test_user_list_template(self):
+    def test_uses_list_template(self):
         list_ = List.objects.create()
         response = self.client.get('/lists/%d/' % (list_.id,))
         self.assertTemplateUsed(response, 'list.html')
 
-    def test_displays_all_items(self):
+    def test_displays_only_items_for_that_list(self):
         correct_list = List.objects.create()
         Item.objects.create(text='itemey 1', list=correct_list)
         Item.objects.create(text='itemey 2', list=correct_list)
@@ -100,7 +100,7 @@ class NewListTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
 
-    def test_validation_errors_are_are_shown_on_home_page(self):
+    def test_validation_errors_are_shown_on_home_page(self):
         response = self.client.post('/lists/new', data={'text': ''})
         self.assertContains(response, escape(EMPTY_LIST_ERROR))
 
@@ -129,7 +129,7 @@ class NewListTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'list.html')
 
-    def test_for_invalid_input_passes_form_to_templage(self):
+    def test_for_invalid_input_passes_form_to_template(self):
         response = self.post_invalid_input()
         self.assertIsInstance(response.context['form'], ItemForm)
 
