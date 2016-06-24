@@ -1,0 +1,13 @@
+description "Gunicorn server fo {{ host }}"
+
+start on net-device-up
+stop on shutdown
+
+respawn
+
+chdir /home/surasak/sites/{{ host }}/source
+exec ../virtualenv/bin/gunicorn \
+    --bind unix:/tmp/{{ host }}.socket \
+    --access-logfile ../access.log \
+    --error-logfile ../error.log \
+    superlists.wsgi:application
